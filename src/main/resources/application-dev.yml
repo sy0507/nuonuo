@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    username: root
+    password: Test1234
+    url: jdbc:mysql://47.101.140.66:3306/nuonuo?useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.jdbc.Driver
+  mvc:
+    view:
+      suffix: .html
+      prefix: /

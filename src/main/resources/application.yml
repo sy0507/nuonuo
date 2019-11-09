@@ -1,0 +1,54 @@
+spring:
+
+  datasource:
+    username: root
+    password: Test1234
+    url: jdbc:mysql://47.101.140.66:3306/nuonuo?useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  devtools:
+    restart:
+      enabled: false
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  main:
+    banner-mode: "off"
+  mail:
+    host: smtp.qq.com
+    username: 2396649622@qq.com
+    password: uzmrcblqumjuebhc
+    #password: nwtxafjxrxdedjfd
+    port: 25
+    properties:
+      mail:
+      smtp:
+      auth: true
+      starttls:
+      enable: true
+      required: true
+    default-encoding: UTF-8
+
+
+mybatis:
+  configuration:
+    use-generated-keys: true
+    use-column-label: true
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+    type-aliases-package: com.example.nuonuo.pojo.entity
+    mapper-locations: classpath:mapper/**.xml
+
+web:
+  url:
+      root: http://47.101.140.66
+      file: ${web.url.root}/files
+store:
+  file:
+    path: /data/files
+    max-path-length: 200
+server:
+  port: 90
