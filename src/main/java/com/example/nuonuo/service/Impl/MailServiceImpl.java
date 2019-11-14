@@ -61,9 +61,9 @@ public class MailServiceImpl implements MailService {
 
       //判断数据库中是否存在该邮箱的申请记录 如果有且在5min内则返回（） 否则发送邮件
       ResetMailCode resetMailCode = resetMailCodeMapper.findByEmail(email);
-//      if (resetMailCode != null) {
-//        throw new CommonException("已发送至您邮箱，请10分钟后重试");
-//      }
+      if (resetMailCode != null) {
+        resetMailCodeMapper.deleteByPrimaryKey(resetMailCode.getId());
+      }
       System.out.println(4);
       String code = generateCode(6) + "";
       //向数据库中插入新的记录

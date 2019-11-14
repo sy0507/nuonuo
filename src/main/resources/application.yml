@@ -22,7 +22,7 @@ spring:
     username: 2396649622@qq.com
     password: uzmrcblqumjuebhc
     #password: nwtxafjxrxdedjfd
-    port: 25
+    port: 587
     properties:
       mail:
       smtp:
