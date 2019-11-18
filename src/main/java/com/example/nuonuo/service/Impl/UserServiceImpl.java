@@ -114,8 +114,6 @@ public class UserServiceImpl implements UserService {
       User user = new User();
       user.setUid(resetMailCode.getUid());
 
-
-
       user.setPassword(encryptPassword(dto.getPassword()));
       userMapper.updateByPrimaryKeySelective(user);
     }
