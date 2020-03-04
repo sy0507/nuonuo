@@ -116,6 +116,7 @@ public class CenterServiceImpl implements CenterService {
         //写入数据库
        for(Distance distance:distances){
            //System.out.println(distance.getAid()+"  "+distance.getBid());
+           //很快乐
            distanceMapper.insert(distance);
        }
 
