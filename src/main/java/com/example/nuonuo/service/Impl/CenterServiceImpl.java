@@ -85,22 +85,39 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public void distance(DistanceDTO distanceDTO) {
-        Distance distance=new Distance();
-        BeanUtils.copyProperties(distanceDTO,distance);
-        Center centerA=centerMapper.selectByPrimaryKey(distanceDTO.getAid());
-        Center centerB=centerMapper.selectByPrimaryKey(distanceDTO.getBid());
+    public void distance() {
 
-        double ALon=centerA.getLongitude()*(Math.PI/180);
-        double ALan=centerA.getLatitude()*(Math.PI/180);
-        double BLon=centerB.getLongitude()*(Math.PI/180);
-        double BLan=centerB.getLatitude()*(Math.PI/180);
-        double earthR = 6378;
-        double distence = Math.acos(Math.sin(ALan) * Math.sin(BLan)
-                + Math.cos(ALan) * Math.cos(BLan) * Math.cos(BLon - ALon)) * earthR;
-              distance.setDistance(distence);
-              distanceMapper.updateByPrimaryKeySelective(distance);
+        //删除数据库distances
+        distanceMapper.deleteAll();
 
+        List<Center> centers = centerMapper.selectAll();
+        List<Distance> distances = new ArrayList<>();
+
+
+
+        Integer count = centers.size();
+        for(int i=0;i<count;i++){
+            for(int j=i+1;j<count;j++){
+                Distance distance = new Distance();
+                distance.setAid(centers.get(i).getCenterId());
+                distance.setBid(centers.get(j).getCenterId());
+                double ALon= centers.get(i).getLongitude()*(Math.PI/180);
+                double ALan= centers.get(i).getLatitude()*(Math.PI/180);
+                double BLon= centers.get(j).getLongitude()*(Math.PI/180);
+                double BLan= centers.get(j).getLatitude()*(Math.PI/180);
+                double earthR = 6378;
+                double distence = Math.acos(Math.sin(ALan) * Math.sin(BLan)
+                        + Math.cos(ALan) * Math.cos(BLan) * Math.cos(BLon - ALon)) * earthR;
+                distance.setDistance(distence);
+                distances.add(distance);
+            }
+        }
+
+        //写入数据库
+       for(Distance distance:distances){
+           //System.out.println(distance.getAid()+"  "+distance.getBid());
+           distanceMapper.insert(distance);
+       }
 
     }
 

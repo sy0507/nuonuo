@@ -22,5 +22,5 @@ public interface CenterService {
     List<CarCenterVO> getOwnCarVo(Integer id);
 
 
-    void distance(DistanceDTO distanceDTO);
+    void distance();
 }

@@ -49,9 +49,9 @@ public class CenterController {
     }
 
     @PostMapping("/distance")
-    public WebAsyncTask<Object> distance(@RequestBody DistanceDTO distanceDTO){
+    public WebAsyncTask<Object> distance(){
         return new WebAsyncTask<>(() -> {
-            centerService.distance(distanceDTO);
+            centerService.distance();
             return JsonResult.ok();
         });
     }
