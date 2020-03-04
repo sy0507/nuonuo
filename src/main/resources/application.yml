@@ -2,8 +2,8 @@ spring:
 
   datasource:
     username: root
-    password: Test1234
-    url: jdbc:mysql://47.101.140.66:3306/nuonuo?useSSL=false&serverTimezone=Asia/Shanghai
+    password: 123456
+    url: jdbc:mysql://116.62.42.66:3306/A12?useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   devtools:
     restart:
