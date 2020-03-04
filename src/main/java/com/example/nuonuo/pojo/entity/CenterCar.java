@@ -17,4 +17,6 @@ public class CenterCar {
     private Integer carId;
 
     private Integer num;
+
+    private Double weight;
 }

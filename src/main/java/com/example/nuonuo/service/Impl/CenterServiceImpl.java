@@ -62,7 +62,9 @@ public class CenterServiceImpl implements CenterService {
         CenterCar centerCar=new CenterCar();
         centerCar.setCenterId(id);
         centerCar.setCarId(centerCarDTO.getCarId());
+        Car car=carMapper.selectByPrimaryKey(centerCarDTO.getCarId());
         centerCar.setNum(centerCarDTO.getNum());
+        centerCar.setWeight(car.getWeight());
         centerCarMapper.insertSelective(centerCar);
 
     }
@@ -111,6 +113,7 @@ public class CenterServiceImpl implements CenterService {
         StringBuffer write;
         StringBuffer write1;
         StringBuffer write2;
+        StringBuffer write3;
 //        if(!file.exists()){
 //                      file.createNewFile();
 //                    }
@@ -150,6 +153,16 @@ public class CenterServiceImpl implements CenterService {
             write2.append("\r\n");
             Buff.write(write2.toString().getBytes("UTF-8"));
         }
+        for (int b=0;b<centerCarList.size();b++)
+        {
+            write3=new StringBuffer();
+            write3.append(centerCarList.get(b).getNum());
+            write3.append(" ");
+            write3.append(centerCarList.get(b).getWeight());
+            write3.append("\r\n");
+            Buff.write(write3.toString().getBytes("UTF-8"));
+        }
+
         Buff.flush();
         Buff.close();
 
