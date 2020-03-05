@@ -55,4 +55,8 @@ public class CenterController {
             return JsonResult.ok();
         });
     }
+    @GetMapping("/execute")
+    public WebAsyncTask<Object> execute(Integer lenth,Integer speed,Integer time){
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.execute(lenth,speed,time)));
+    }
 }

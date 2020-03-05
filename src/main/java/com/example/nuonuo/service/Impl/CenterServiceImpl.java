@@ -1,18 +1,12 @@
 package com.example.nuonuo.service.Impl;
 
-import com.example.nuonuo.mapper.CarMapper;
-import com.example.nuonuo.mapper.CenterCarMapper;
-import com.example.nuonuo.mapper.CenterMapper;
-import com.example.nuonuo.mapper.DistanceMapper;
+import com.example.nuonuo.mapper.*;
 import com.example.nuonuo.pojo.dto.CenterCarDTO;
 import com.example.nuonuo.pojo.dto.CenterDTO;
-import com.example.nuonuo.pojo.dto.DistanceDTO;
-import com.example.nuonuo.pojo.entity.Car;
-import com.example.nuonuo.pojo.entity.Center;
-import com.example.nuonuo.pojo.entity.CenterCar;
-import com.example.nuonuo.pojo.entity.Distance;
+import com.example.nuonuo.pojo.entity.*;
 import com.example.nuonuo.pojo.vo.CarCenterVO;
 import com.example.nuonuo.pojo.vo.CenterVO;
+import com.example.nuonuo.pojo.vo.ResultVO;
 import com.example.nuonuo.service.CenterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -20,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class CenterServiceImpl implements CenterService {
@@ -27,12 +23,14 @@ public class CenterServiceImpl implements CenterService {
     private final CenterCarMapper centerCarMapper;
     private final CarMapper carMapper;
     private final DistanceMapper distanceMapper;
+    private final ResultMapper resultMapper;
 
-    public CenterServiceImpl(CenterMapper centerMapper, CenterCarMapper centerCarMapper, CarMapper carMapper, DistanceMapper distanceMapper) {
+    public CenterServiceImpl(CenterMapper centerMapper, CenterCarMapper centerCarMapper, CarMapper carMapper, DistanceMapper distanceMapper, ResultMapper resultMapper) {
         this.centerMapper = centerMapper;
         this.centerCarMapper = centerCarMapper;
         this.carMapper = carMapper;
         this.distanceMapper = distanceMapper;
+        this.resultMapper = resultMapper;
     }
 
     @Override
@@ -53,7 +51,6 @@ public class CenterServiceImpl implements CenterService {
             BeanUtils.copyProperties(centerList.get(i),centerVO);
             centerVOList.add(centerVO);
         }
-        outfile();
         return centerVOList;
     }
 
@@ -122,7 +119,97 @@ public class CenterServiceImpl implements CenterService {
 
     }
 
-    public void outfile() throws IOException {
+    @Override
+    public Object execute(Integer lenth,Integer speed,Integer time) throws IOException {
+        resultMapper.deleteAll();
+        outfile(lenth,speed,time);
+        final Process proc = Runtime.getRuntime().exec("A12.exe");
+         Pattern compile = Pattern.compile("\\d+");
+         Pattern compile2 = Pattern.compile("\\d+.\\d+");
+        int carNum;
+        int skipLine = 2;
+        int nowLine = 0;
+        try{
+            FileReader fr = new FileReader("out.txt");
+            BufferedReader bf = new BufferedReader(fr);
+            String str;
+            while ((str = bf.readLine()) != null && nowLine <= skipLine){
+                nowLine++;
+            }
+            carNum =matchNumberToInt(str);
+            System.out.println("匹配到车辆数：" + carNum);
+            int carType;
+            double fullLoadRate;
+            double mileage;
+            String route;
+            while ((str = bf.readLine()) != null) {
+                try{
+                    String[] split = str.split(",");
+                    carType = matchNumberToInt(split[0]);
+                    fullLoadRate = matchNumberToDouble(split[1]);
+                    mileage = matchNumberToDouble(split[2]);
+                    route = split[3].split(":")[1].trim();
+                    System.out.println("----------------------------");
+                    System.out.println(str);
+                    System.out.println("解析：类型：" + carType);
+                    System.out.println("解析：满载率：" + fullLoadRate);
+                    System.out.println("解析：里程数：" + mileage);
+                    System.out.println("解析：行驶的路线：" + route);
+                    Result result=new Result();
+                    result.setCarId(carType);
+                    result.setFullLoadRate(fullLoadRate);
+                    result.setMileage(mileage);
+                    result.setRoute(route);
+                    resultMapper.updateByPrimaryKeySelective(result);
+
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    System.out.println("解析出错");
+                }
+            }
+            bf.close();
+            fr.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<ResultVO> resultVOList=new ArrayList<>();
+        List<Result> resultList=resultMapper.selectAll();
+        for (int i=0;i<resultList.size();i++)
+        {
+            ResultVO resultVO=new ResultVO();
+            BeanUtils.copyProperties(resultList.get(i),resultVO);
+            resultVOList.add(resultVO);
+        }
+        return resultVOList;
+
+
+
+    }
+
+
+    static int matchNumberToInt(String str){
+        Pattern compile = Pattern.compile("\\d+");
+        int result = 0;
+        Matcher matcher = compile.matcher(str);
+        if (matcher.find()){
+            String numString = matcher.group();
+            result = Integer.parseInt(numString);
+        }
+        return result;
+    }
+    static double matchNumberToDouble(String str){
+        Pattern compile2 = Pattern.compile("\\d+.\\d+");
+        double result = 0;
+        Matcher matcher = compile2.matcher(str);
+        if (matcher.find()){
+            String numString = matcher.group();
+            result = Double.parseDouble(numString);
+        }
+        return result;
+    }
+
+    public void outfile(Integer lenth,Integer speed,Integer time) throws IOException {
 //        File file=null;
 //        FileWriter fw=null;
 //        file=new File("in.txt");
@@ -151,6 +238,12 @@ public class CenterServiceImpl implements CenterService {
         write.append(countd);
         write.append(" ");
         write.append(countc);
+        write.append(" ");
+        write.append(lenth);
+        write.append(" ");
+        write.append(speed);
+        write.append(" ");
+        write.append(time);
         write.append("\r\n");
 //        fw.write(count+" "+countd+" "+countc+"\r\n");
         Buff.write(write.toString().getBytes("UTF-8"));

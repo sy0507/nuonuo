@@ -23,4 +23,7 @@ public interface CenterService {
 
 
     void distance();
+
+
+    Object execute(Integer lenth, Integer speed, Integer time) throws IOException;
 }
