@@ -5,15 +5,26 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+
 @Getter
 @Setter
 @ToString
 public class PlaceVO {
-    private Integer id;
+    @Id
+    @Column(name = "place_id")
+    private Integer placeId;
 
-    private String longitude;
+    private String sname;
 
-    private  String latitude;
+    private  String address;
+    private Double longitude;
+
+    private  Double latitude;
 
     private String need;
+
+    @Column(name = "center_id")
+    private Integer centerId;
 }

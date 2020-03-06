@@ -33,11 +33,11 @@ public class CenterController {
         });
     }
 
-    @PostMapping("/own")
-    public WebAsyncTask<Object> ownCar( @RequestBody CenterCarDTO centerCarDTO){
+    @PostMapping("/own/{centerId}")
+    public WebAsyncTask<Object> ownCar(@PathVariable Integer centerId, @RequestBody CenterCarDTO centerCarDTO){
 
         return new WebAsyncTask<>(() -> {
-            centerService.own(centerCarDTO);
+            centerService.own(centerId,centerCarDTO);
             return JsonResult.ok();
         });
     }
@@ -46,9 +46,9 @@ public class CenterController {
         return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getCenterInfoVo()));
     }
 
-    @GetMapping("/owncar")
-    public WebAsyncTask<Object> getOwnCar(){
-        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getOwnCarVo()));
+    @GetMapping("/owncar/{centerId}")
+    public WebAsyncTask<Object> getOwnCar(@PathVariable Integer centerId){
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getOwnCarVo(centerId)));
     }
 
     @PutMapping("/modify")
@@ -82,10 +82,10 @@ public class CenterController {
 
 
 
-    @PostMapping("/distance")
-    public WebAsyncTask<Object> distance(){
+    @PostMapping("/distance/{centerId}")
+    public WebAsyncTask<Object> distance(@PathVariable Integer centerId){
         return new WebAsyncTask<>(() -> {
-            centerService.distance();
+            centerService.distance(centerId);
             return JsonResult.ok();
         });
     }

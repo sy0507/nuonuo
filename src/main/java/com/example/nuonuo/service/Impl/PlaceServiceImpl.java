@@ -30,14 +30,35 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public List<PlaceVO> getplaceInfoVo() {
+    public List<PlaceVO> getplaceInfoVo(Integer centerId) {
         List<PlaceVO> placeVOList=new ArrayList<>();
-        List<Place> placeList=placeMapper.selectAll();
+        List<Place> placeList=placeMapper.selectByCenterId(centerId);
         for (int i=0;i<placeList.size();i++){
             PlaceVO placeVO=new PlaceVO();
             BeanUtils.copyProperties(placeList.get(i),placeVO);
             placeVOList.add(placeVO);
         }
         return placeVOList;
+    }
+
+    @Override
+    public Object getPresentInfoVo(Integer placeId) {
+        Place place=placeMapper.selectByPrimaryKey(placeId);
+        PlaceVO placeVO=new PlaceVO();
+        BeanUtils.copyProperties(place,placeVO);
+        return placeVO;
+    }
+
+    @Override
+    public Object modify(Integer placeId, PlaceDTO placeDTO) {
+        Place place=placeMapper.selectByPrimaryKey(placeId);
+        BeanUtils.copyProperties(placeDTO,place);
+        placeMapper.updateByPrimaryKeySelective(place);
+        return null;
+    }
+
+    @Override
+    public void deleteplace(Integer placeId) {
+        placeMapper.deleteByPrimaryKey(placeId);
     }
 }

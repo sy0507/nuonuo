@@ -24,19 +24,22 @@ public class CenterServiceImpl implements CenterService {
     private final CarMapper carMapper;
     private final DistanceMapper distanceMapper;
     private final ResultMapper resultMapper;
+    private final PlaceMapper placeMapper;
 
-    public CenterServiceImpl(CenterMapper centerMapper, CenterCarMapper centerCarMapper, CarMapper carMapper, DistanceMapper distanceMapper, ResultMapper resultMapper) {
+    public CenterServiceImpl(CenterMapper centerMapper, CenterCarMapper centerCarMapper, CarMapper carMapper, DistanceMapper distanceMapper, ResultMapper resultMapper, PlaceMapper placeMapper) {
         this.centerMapper = centerMapper;
         this.centerCarMapper = centerCarMapper;
         this.carMapper = carMapper;
         this.distanceMapper = distanceMapper;
         this.resultMapper = resultMapper;
+        this.placeMapper = placeMapper;
     }
 
     @Override
     public void add(CenterDTO centerdto) {
         Center center=new Center();
         BeanUtils.copyProperties(centerdto,center);
+        center.setNeed("0");
         centerMapper.insertSelective(center);
 
 
@@ -55,19 +58,16 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public void own( CenterCarDTO centerCarDTO) {
+    public void own(Integer centerId, CenterCarDTO centerCarDTO) {
         CenterCar centerCar=new CenterCar();
-        Center center=centerMapper.findTop();
-        centerCar.setCenterId(center.getCenterId());
+        centerCar.setCenterId(centerId);
         centerCar.setNum(centerCarDTO.getNum());
         centerCar.setWeight(centerCarDTO.getWeight());
         centerCarMapper.insertSelective(centerCar);
     }
 
     @Override
-    public List<CarCenterVO> getOwnCarVo() {
-        Center center=centerMapper.findTop();
-        int centerId=center.getCenterId();
+    public List<CarCenterVO> getOwnCarVo(Integer centerId) {
         List<CenterCar> centerCarList=centerCarMapper.getById(centerId);
         List<CarCenterVO> list=new ArrayList<>();
         for(CenterCar centerCar:centerCarList){
@@ -81,26 +81,43 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public void distance() {
+    public void distance(Integer centerId) {
 
         //删除数据库distances
         distanceMapper.deleteAll();
 
-        List<Center> centers = centerMapper.selectAll();
+        List<Place> places = placeMapper.selectByCenterId(centerId);
         List<Distance> distances = new ArrayList<>();
+        Center center=centerMapper.selectByPrimaryKey(centerId);
+
+        Integer count = places.size();
+        for (int k=0;k<count;k++)
+        {
+            Distance distance=new Distance();
+            distance.setAid(0);
+            distance.setBid(places.get(k).getPlaceId());
+            double ALon= center.getLongitude()*(Math.PI/180);
+            double ALan= center.getLatitude()*(Math.PI/180);
+            double BLon= places.get(k).getLongitude()*(Math.PI/180);
+            double BLan= places.get(k).getLatitude()*(Math.PI/180);
+            double earthR = 6378;
+            double distence = Math.acos(Math.sin(ALan) * Math.sin(BLan)
+                    + Math.cos(ALan) * Math.cos(BLan) * Math.cos(BLon - ALon)) * earthR;
+            distance.setDistance(distence);
+            distances.add(distance);
+        }
 
 
 
-        Integer count = centers.size();
         for(int i=0;i<count;i++){
             for(int j=i+1;j<count;j++){
                 Distance distance = new Distance();
-                distance.setAid(centers.get(i).getCenterId());
-                distance.setBid(centers.get(j).getCenterId());
-                double ALon= centers.get(i).getLongitude()*(Math.PI/180);
-                double ALan= centers.get(i).getLatitude()*(Math.PI/180);
-                double BLon= centers.get(j).getLongitude()*(Math.PI/180);
-                double BLan= centers.get(j).getLatitude()*(Math.PI/180);
+                distance.setAid(places.get(i).getPlaceId());
+                distance.setBid(places.get(j).getPlaceId());
+                double ALon= places.get(i).getLongitude()*(Math.PI/180);
+                double ALan= places.get(i).getLatitude()*(Math.PI/180);
+                double BLon= places.get(j).getLongitude()*(Math.PI/180);
+                double BLan= places.get(j).getLatitude()*(Math.PI/180);
                 double earthR = 6378;
                 double distence = Math.acos(Math.sin(ALan) * Math.sin(BLan)
                         + Math.cos(ALan) * Math.cos(BLan) * Math.cos(BLon - ALon)) * earthR;
@@ -219,11 +236,6 @@ public class CenterServiceImpl implements CenterService {
 
     @Override
     public void deletecenter(Integer id) {
-        Center center=centerMapper.findTop();
-        if (center.getCenterId()==id)
-        {
-            centerMapper.deleteAll();
-        }
         centerMapper.deleteByPrimaryKey(id);
     }
 

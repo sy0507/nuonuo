@@ -1,6 +1,7 @@
 package com.example.nuonuo.Controller.v1;
 
 
+import com.example.nuonuo.pojo.dto.CenterDTO;
 import com.example.nuonuo.pojo.dto.PlaceDTO;
 import com.example.nuonuo.service.PlaceService;
 import com.example.nuonuo.util.JsonResult;
@@ -28,8 +29,26 @@ public class PlaceController {
         });
     }
 
-    @GetMapping("/show")
-    public WebAsyncTask<Object> show(){
-        return new WebAsyncTask<>(() -> JsonResult.ok(placeService.getplaceInfoVo()));
+    @GetMapping("/show/{centerId}")
+    public WebAsyncTask<Object> show(@PathVariable Integer centerId) {
+        return new WebAsyncTask<>(() -> JsonResult.ok(placeService.getplaceInfoVo(centerId)));
+    }
+
+    @GetMapping("/present/{placeId}")
+    public WebAsyncTask<Object> present(@PathVariable Integer placeId) {
+        return new WebAsyncTask<>(() -> JsonResult.ok(placeService.getPresentInfoVo(placeId)));
+    }
+
+    @PutMapping("/{placeId}")
+    public WebAsyncTask<Object> modify(@PathVariable Integer placeId, @RequestBody @Validated PlaceDTO placeDTO) {
+        return new WebAsyncTask<>(() -> JsonResult.ok(placeService.modify(placeId, placeDTO)));
+    }
+
+    @DeleteMapping("/{placeId}")
+    public WebAsyncTask<Object> deletecenter(@PathVariable Integer placeId) {
+        return new WebAsyncTask<>(() -> {
+            placeService.deleteplace(placeId);
+            return JsonResult.ok();
+        });
     }
 }

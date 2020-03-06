@@ -11,5 +11,15 @@ public interface PlaceService {
     void add(PlaceDTO placeDTO);
 
 
-    List<PlaceVO> getplaceInfoVo();
+    List<PlaceVO> getplaceInfoVo(Integer centerId);
+
+
+    Object getPresentInfoVo(Integer placeId);
+
+
+    Object modify(Integer placeId, PlaceDTO placeDTO);
+
+
+
+    void deleteplace(Integer placeId);
 }

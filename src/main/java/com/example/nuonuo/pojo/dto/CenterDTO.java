@@ -19,7 +19,6 @@ public class CenterDTO {
 
     private  Double latitude;
 
-    private String need;
 
     private String address;
 
