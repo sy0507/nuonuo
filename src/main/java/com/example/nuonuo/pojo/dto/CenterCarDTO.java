@@ -10,8 +10,8 @@ import javax.persistence.Column;
 @Setter
 @ToString
 public class CenterCarDTO {
-    @Column(name = "car_id")
-    private Integer carId;
 
     private Integer num;
+
+    private Double weight;
 }

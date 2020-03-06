@@ -16,14 +16,29 @@ public interface CenterService {
     List<CenterVO> getCenterInfoVo() throws IOException;
 
 
-    void own(Integer id, CenterCarDTO centerCarDTO);
+    void own( CenterCarDTO centerCarDTO);
 
 
-    List<CarCenterVO> getOwnCarVo(Integer id);
+    List<CarCenterVO> getOwnCarVo();
 
 
     void distance();
 
 
-    Object execute(Integer lenth, Integer speed, Integer time) throws IOException;
+    Object execute(Integer lenth, Integer speed, Integer time) throws IOException, InterruptedException;
+
+
+    Object modify(Integer id, CenterDTO centerDTO);
+
+
+    Object getInfo(Integer id);
+
+
+    Object modifycar(Integer id, CenterCarDTO centerCarDTO);
+
+
+    void delete(Integer id);
+
+
+    void deletecenter(Integer id);
 }

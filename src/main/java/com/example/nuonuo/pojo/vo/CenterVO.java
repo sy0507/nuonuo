@@ -23,4 +23,6 @@ public class CenterVO {
 
     private String need;
 
+    private String address;
+
 }

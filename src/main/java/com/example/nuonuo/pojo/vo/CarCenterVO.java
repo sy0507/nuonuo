@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 
 @Getter
 @Setter
@@ -12,6 +13,7 @@ import javax.persistence.Column;
 public class CarCenterVO {
     @Column(name = "center_id")
     private Integer centerId;
+    @Id
     @Column(name = "car_id")
     private Integer carId;
     private Integer num;

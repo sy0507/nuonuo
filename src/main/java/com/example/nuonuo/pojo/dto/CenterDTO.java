@@ -21,4 +21,6 @@ public class CenterDTO {
 
     private String need;
 
+    private String address;
+
 }

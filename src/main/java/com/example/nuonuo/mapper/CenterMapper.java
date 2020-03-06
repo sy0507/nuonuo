@@ -9,5 +9,12 @@ import javax.persistence.Table;
 @Table(name = "center")
 public interface CenterMapper extends BaseMapper<Center> {
 
+    @Select("delete  from center where 1=1")
+    void deleteAll();
 
+    @Select("select * from center LIMIT 1")
+    Center findTop();
+
+    @Select("select * from center where sname=#{sname}")
+    Center fingBySname(String sname);
 }

@@ -24,4 +24,6 @@ public class Center {
     private  Double latitude;
 
     private String need;
+
+    private String address;
 }

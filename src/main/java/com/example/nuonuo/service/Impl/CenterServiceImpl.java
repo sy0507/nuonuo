@@ -55,26 +55,25 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public void own(Integer id, CenterCarDTO centerCarDTO) {
+    public void own( CenterCarDTO centerCarDTO) {
         CenterCar centerCar=new CenterCar();
-        centerCar.setCenterId(id);
-        centerCar.setCarId(centerCarDTO.getCarId());
-        Car car=carMapper.selectByPrimaryKey(centerCarDTO.getCarId());
+        Center center=centerMapper.findTop();
+        centerCar.setCenterId(center.getCenterId());
         centerCar.setNum(centerCarDTO.getNum());
-        centerCar.setWeight(car.getWeight());
+        centerCar.setWeight(centerCarDTO.getWeight());
         centerCarMapper.insertSelective(centerCar);
-
     }
 
     @Override
-    public List<CarCenterVO> getOwnCarVo(Integer id) {
-        List<CenterCar> centerCarList=centerCarMapper.getById(id);
+    public List<CarCenterVO> getOwnCarVo() {
+        Center center=centerMapper.findTop();
+        int centerId=center.getCenterId();
+        List<CenterCar> centerCarList=centerCarMapper.getById(centerId);
         List<CarCenterVO> list=new ArrayList<>();
         for(CenterCar centerCar:centerCarList){
             CarCenterVO carCenterVO=new CarCenterVO();
             BeanUtils.copyProperties(centerCar,carCenterVO);
-            Car car=carMapper.selectByPrimaryKey(centerCar.getCarId());
-            carCenterVO.setWeight(car.getWeight());
+            carCenterVO.setWeight(centerCar.getWeight());
             list.add(carCenterVO);
         }
 
@@ -120,10 +119,11 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public Object execute(Integer lenth,Integer speed,Integer time) throws IOException {
+    public Object execute(Integer lenth,Integer speed,Integer time) throws IOException, InterruptedException {
         resultMapper.deleteAll();
         outfile(lenth,speed,time);
         final Process proc = Runtime.getRuntime().exec("A12.exe");
+        Thread.currentThread().sleep(1000);
          Pattern compile = Pattern.compile("\\d+");
          Pattern compile2 = Pattern.compile("\\d+.\\d+");
         int carNum;
@@ -160,7 +160,7 @@ public class CenterServiceImpl implements CenterService {
                     result.setFullLoadRate(fullLoadRate);
                     result.setMileage(mileage);
                     result.setRoute(route);
-                    resultMapper.updateByPrimaryKeySelective(result);
+                    resultMapper.insertSelective(result);
 
 
                 }catch (Exception e){
@@ -185,6 +185,46 @@ public class CenterServiceImpl implements CenterService {
 
 
 
+    }
+
+    @Override
+    public Object modify(Integer id, CenterDTO centerDTO) {
+        Center center=centerMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(centerDTO,center);
+        centerMapper.updateByPrimaryKeySelective(center);
+        return null;
+    }
+
+    @Override
+    public Object getInfo(Integer id) {
+        CenterVO centerVO=new CenterVO();
+        Center center=centerMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(center,centerVO);
+        return centerVO;
+    }
+
+    @Override
+    public Object modifycar(Integer id, CenterCarDTO centerCarDTO) {
+        CenterCar centerCar=centerCarMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(centerCarDTO,centerCar);
+        centerCarMapper.updateByPrimaryKeySelective(centerCar);
+        return null;
+    }
+
+    @Override
+    public void delete(Integer id) {
+        centerCarMapper.deleteByPrimaryKey(id);
+
+    }
+
+    @Override
+    public void deletecenter(Integer id) {
+        Center center=centerMapper.findTop();
+        if (center.getCenterId()==id)
+        {
+            centerMapper.deleteAll();
+        }
+        centerMapper.deleteByPrimaryKey(id);
     }
 
 

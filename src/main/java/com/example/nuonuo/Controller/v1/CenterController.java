@@ -4,7 +4,10 @@ package com.example.nuonuo.Controller.v1;
 import com.example.nuonuo.pojo.dto.CenterCarDTO;
 import com.example.nuonuo.pojo.dto.CenterDTO;
 import com.example.nuonuo.pojo.dto.DistanceDTO;
+import com.example.nuonuo.pojo.dto.PutUserProfileDTO;
+import com.example.nuonuo.pojo.entity.User;
 import com.example.nuonuo.service.CenterService;
+import com.example.nuonuo.token.Token;
 import com.example.nuonuo.util.JsonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -30,11 +33,11 @@ public class CenterController {
         });
     }
 
-    @PostMapping("/own/{centerId}")
-    public WebAsyncTask<Object> ownCar(@PathVariable("centerId") Integer id, @RequestBody CenterCarDTO centerCarDTO){
+    @PostMapping("/own")
+    public WebAsyncTask<Object> ownCar( @RequestBody CenterCarDTO centerCarDTO){
 
         return new WebAsyncTask<>(() -> {
-            centerService.own(id,centerCarDTO);
+            centerService.own(centerCarDTO);
             return JsonResult.ok();
         });
     }
@@ -43,10 +46,41 @@ public class CenterController {
         return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getCenterInfoVo()));
     }
 
-    @GetMapping("/owncar/{centerId}")
-    public WebAsyncTask<Object> getOwnCar(@PathVariable("centerId") Integer id){
-        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getOwnCarVo(id)));
+    @GetMapping("/owncar")
+    public WebAsyncTask<Object> getOwnCar(){
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getOwnCarVo()));
     }
+
+    @PutMapping("/modify")
+    public WebAsyncTask<Object> modify(Integer id,@RequestBody @Validated CenterDTO centerDTO) {
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.modify(id, centerDTO)));
+    }
+
+    @PutMapping("/modifycar")
+    public WebAsyncTask<Object> modifycar(Integer id,@RequestBody @Validated CenterCarDTO centerCarDTO) {
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.modifycar(id,centerCarDTO)));
+    }
+    @GetMapping("/info")
+    public WebAsyncTask<Object> getInfo(Integer id){
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getInfo(id)));
+    }
+    @DeleteMapping("/car/{id}")
+    public WebAsyncTask<Object> delete(@PathVariable Integer id) {
+        return new WebAsyncTask<>(() -> {
+            centerService.delete(id);
+            return JsonResult.ok();
+        });
+    }
+
+    @DeleteMapping("/place/{id}")
+    public WebAsyncTask<Object> deletecenter(@PathVariable Integer id) {
+        return new WebAsyncTask<>(() -> {
+            centerService.deletecenter(id);
+            return JsonResult.ok();
+        });
+    }
+
+
 
     @PostMapping("/distance")
     public WebAsyncTask<Object> distance(){
