@@ -11,4 +11,6 @@ public interface CenterCarMapper extends BaseMapper<CenterCar> {
 
     @Select("select * from center_car where center_id = #{center_id}")
     List<CenterCar> getById(@Param("center_id") Integer centerId);
+
+
 }

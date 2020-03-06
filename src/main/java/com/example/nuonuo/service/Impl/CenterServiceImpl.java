@@ -136,9 +136,8 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public Object execute(Integer lenth,Integer speed,Integer time) throws IOException, InterruptedException {
-        resultMapper.deleteAll();
-        outfile(lenth,speed,time);
+    public Object execute(Integer centerId,Integer lenth,Integer speed,Integer time) throws IOException, InterruptedException {
+        outfile(centerId,lenth,speed,time);
         final Process proc = Runtime.getRuntime().exec("A12.exe");
         Thread.currentThread().sleep(1000);
          Pattern compile = Pattern.compile("\\d+");
@@ -221,16 +220,21 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public Object modifycar(Integer id, CenterCarDTO centerCarDTO) {
-        CenterCar centerCar=centerCarMapper.selectByPrimaryKey(id);
+    public Object modifycar(Integer carId,Integer centerId, CenterCarDTO centerCarDTO) {
+        CenterCar centerCar=new CenterCar();
+        centerCar.setCarId(carId);
+        centerCar.setCenterId(centerId);
         BeanUtils.copyProperties(centerCarDTO,centerCar);
         centerCarMapper.updateByPrimaryKeySelective(centerCar);
         return null;
     }
 
     @Override
-    public void delete(Integer id) {
-        centerCarMapper.deleteByPrimaryKey(id);
+    public void delete(Integer carId,Integer centerId) {
+        CenterCar centerCar=new CenterCar();
+        centerCar.setCarId(carId);
+        centerCar.setCenterId(centerId);
+        centerCarMapper.delete(centerCar);
 
     }
 
@@ -261,7 +265,7 @@ public class CenterServiceImpl implements CenterService {
         return result;
     }
 
-    public void outfile(Integer lenth,Integer speed,Integer time) throws IOException {
+    public void outfile(Integer centerId,Integer lenth,Integer speed,Integer time) throws IOException {
 //        File file=null;
 //        FileWriter fw=null;
 //        file=new File("in.txt");
@@ -278,12 +282,12 @@ public class CenterServiceImpl implements CenterService {
         outSTr=new FileOutputStream("in.txt");
         Buff = new BufferedOutputStream(outSTr);
         write=new StringBuffer();
-        List<Center> list=centerMapper.selectAll();
-        int count=list.size()-1;
+        List<Place> list=placeMapper.selectByCenterId(centerId);
+        int count=list.size();
         List<Distance> distanceList=distanceMapper.selectAll();
         int countd;
         countd = distanceList.size();
-        List<CenterCar> centerCarList=centerCarMapper.selectAll();
+        List<CenterCar> centerCarList=centerCarMapper.getById(centerId);
         int countc=centerCarList.size();
         write.append(count);
         write.append(" ");
@@ -297,7 +301,8 @@ public class CenterServiceImpl implements CenterService {
         write.append(" ");
         write.append(time);
         write.append("\r\n");
-//        fw.write(count+" "+countd+" "+countc+"\r\n");
+        write.append(0);
+        write.append("\r\n");
         Buff.write(write.toString().getBytes("UTF-8"));
         for (int i=0;i<list.size();i++){
             write1=new StringBuffer();

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 @Setter
 @ToString
 public class CarCenterVO {
+    @Id
     @Column(name = "center_id")
     private Integer centerId;
     @Id

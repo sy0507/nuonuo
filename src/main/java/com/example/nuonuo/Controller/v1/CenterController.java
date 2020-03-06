@@ -57,17 +57,17 @@ public class CenterController {
     }
 
     @PutMapping("/modifycar")
-    public WebAsyncTask<Object> modifycar(Integer id,@RequestBody @Validated CenterCarDTO centerCarDTO) {
-        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.modifycar(id,centerCarDTO)));
+    public WebAsyncTask<Object> modifycar(Integer carId,Integer centerId,@RequestBody @Validated CenterCarDTO centerCarDTO) {
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.modifycar(carId,centerId,centerCarDTO)));
     }
     @GetMapping("/info")
     public WebAsyncTask<Object> getInfo(Integer id){
         return new WebAsyncTask<>(() -> JsonResult.ok(centerService.getInfo(id)));
     }
-    @DeleteMapping("/car/{id}")
-    public WebAsyncTask<Object> delete(@PathVariable Integer id) {
+    @DeleteMapping("/car")
+    public WebAsyncTask<Object> delete(Integer carId,Integer centerId) {
         return new WebAsyncTask<>(() -> {
-            centerService.delete(id);
+            centerService.delete(carId,centerId);
             return JsonResult.ok();
         });
     }
@@ -89,8 +89,8 @@ public class CenterController {
             return JsonResult.ok();
         });
     }
-    @GetMapping("/execute")
-    public WebAsyncTask<Object> execute(Integer lenth,Integer speed,Integer time){
-        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.execute(lenth,speed,time)));
+    @GetMapping("/execute/{centerId}")
+    public WebAsyncTask<Object> execute(@PathVariable Integer centerId, Integer lenth,Integer speed,Integer time){
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.execute(centerId,lenth,speed,time)));
     }
 }

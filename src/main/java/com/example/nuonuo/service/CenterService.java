@@ -25,7 +25,7 @@ public interface CenterService {
     void distance(Integer centerId);
 
 
-    Object execute(Integer lenth, Integer speed, Integer time) throws IOException, InterruptedException;
+    Object execute(Integer centerId,Integer lenth, Integer speed, Integer time) throws IOException, InterruptedException;
 
 
     Object modify(Integer id, CenterDTO centerDTO);
@@ -34,10 +34,10 @@ public interface CenterService {
     Object getInfo(Integer id);
 
 
-    Object modifycar(Integer id, CenterCarDTO centerCarDTO);
+    Object modifycar(Integer carId,Integer centerId, CenterCarDTO centerCarDTO);
 
 
-    void delete(Integer id);
+    void delete(Integer carId,Integer centerId);
 
 
     void deletecenter(Integer id);
