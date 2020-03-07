@@ -138,7 +138,8 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public Object execute(Integer centerId,Integer lenth,Integer speed,Integer time) throws IOException, InterruptedException {
         outfile(centerId,lenth,speed,time);
-        final Process proc = Runtime.getRuntime().exec("A12.exe");
+        String fileName = this.getClass().getClassLoader().getResource("A12.exe").getPath();
+        final Process proc = Runtime.getRuntime().exec(fileName);
         Thread.currentThread().sleep(1000);
          Pattern compile = Pattern.compile("\\d+");
          Pattern compile2 = Pattern.compile("\\d+.\\d+");
