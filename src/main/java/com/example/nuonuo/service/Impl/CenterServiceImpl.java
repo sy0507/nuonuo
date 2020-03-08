@@ -69,13 +69,18 @@ public class CenterServiceImpl implements CenterService {
 
     @Override
     public List<CenterVO> getCenterInfoVo() throws IOException {
+
         List<CenterVO> centerVOList=new ArrayList<>();
         List<Center> centerList=centerMapper.selectAll();
+
         for (int i=0;i<centerList.size();i++){
             CenterVO centerVO=new CenterVO();
             BeanUtils.copyProperties(centerList.get(i),centerVO);
+            List<Car> listCar = carMapper.selectByCenterId(centerVO.getCenterId());
+            centerVO.setListCar(listCar);
             centerVOList.add(centerVO);
         }
+
         return centerVOList;
     }
 

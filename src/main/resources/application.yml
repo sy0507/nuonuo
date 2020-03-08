@@ -51,4 +51,4 @@ store:
     path: /data/files
     max-path-length: 200
 server:
-  port: 80
+  port: 90
