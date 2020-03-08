@@ -138,8 +138,19 @@ public class CenterServiceImpl implements CenterService {
     @Override
     public Object execute(Integer centerId,Integer lenth,Integer speed,Integer time) throws IOException, InterruptedException {
         outfile(centerId,lenth,speed,time);
-        String fileName = this.getClass().getClassLoader().getResource("A12.exe").getPath();
-        final Process proc = Runtime.getRuntime().exec(fileName);
+//        String fileName = this.getClass().getClassLoader().getResource("A12.exe").getPath();
+//        ClassPathResource resource = new ClassPathResource("A12.exe");
+//        File sourceFile = resource.getFile();
+//        InputStream fis = resource.getInputStream();
+//        InputStream is = this.getClass().getResourceAsStream("/dict/fileName.txt");
+//        InputStreamReader isr = new InputStreamReader(is);
+//        BufferedReader br = new BufferedReader(isr);
+//        String filePath  = createFile("A12.exe");
+        String fileName = "A12.exe";
+//        String filepath = getUploadResource(fileName);
+//        System.out.println(filepath);
+//        final Process proc = Runtime.getRuntime().exec("A12.exe");
+        final Process proc = Runtime.getRuntime().exec("/ant.out");
         Thread.currentThread().sleep(1000);
          Pattern compile = Pattern.compile("\\d+");
          Pattern compile2 = Pattern.compile("\\d+.\\d+");
@@ -159,6 +170,7 @@ public class CenterServiceImpl implements CenterService {
             double fullLoadRate;
             double mileage;
             String route;
+            int count=0;
             while ((str = bf.readLine()) != null) {
                 try{
                     String[] split = str.split(",");
@@ -178,8 +190,6 @@ public class CenterServiceImpl implements CenterService {
                     result.setMileage(mileage);
                     result.setRoute(route);
                     resultMapper.insertSelective(result);
-
-
                 }catch (Exception e){
                     e.printStackTrace();
                     System.out.println("解析出错");
@@ -187,18 +197,19 @@ public class CenterServiceImpl implements CenterService {
             }
             bf.close();
             fr.close();
+            List<ResultVO> resultVOList=new ArrayList<>();
+            List<Result> resultList=resultMapper.selectAll();
+            for (int i=resultList.size()-1;i>=resultList.size()-carNum;i--)
+            {
+                ResultVO resultVO=new ResultVO();
+                BeanUtils.copyProperties(resultList.get(i),resultVO);
+                resultVOList.add(resultVO);
+            }
+            return resultVOList;
         }catch (IOException e) {
             e.printStackTrace();
         }
-        List<ResultVO> resultVOList=new ArrayList<>();
-        List<Result> resultList=resultMapper.selectAll();
-        for (int i=0;i<resultList.size();i++)
-        {
-            ResultVO resultVO=new ResultVO();
-            BeanUtils.copyProperties(resultList.get(i),resultVO);
-            resultVOList.add(resultVO);
-        }
-        return resultVOList;
+        return null;
 
 
 
@@ -335,8 +346,64 @@ public class CenterServiceImpl implements CenterService {
         Buff.flush();
         Buff.close();
 
-
-
-
     }
+    public String getUploadResource(String fileName) {
+        //返回读取指定资源的输入流
+        InputStream is = this.getClass().getResourceAsStream("/dict/" + fileName);
+
+        //若文件已存在，则返回的filePath中含有"EXIST"，则不需再重写文件
+        String filePath  = createFile(fileName);
+
+        //文件不存在，则创建流输入默认数据到新文件
+        if (!filePath.contains("EXIST")) {
+            File file = new File(filePath);
+            inputStreamToFile(is, file);
+            return filePath;
+        }
+        return filePath.substring(5);
+    }
+
+
+    public String createFile(String filename) {
+        String path = System.getProperty("user.dir");
+        System.out.println(path);
+        //create folder
+        String dirPath = path + File.separator + "uploadFiles";
+        File dir = new File(dirPath);
+        dir.mkdirs();
+
+        //create file
+        String filePath = dirPath + File.separator + filename;
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return filePath;
+        }
+        return "EXIST" + filePath;
+    }
+
+    public void inputStreamToFile(InputStream ins, File file) {
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(file);
+
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+            while ((bytesRead = ins.read(buffer, 0, 1024)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            ins.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
