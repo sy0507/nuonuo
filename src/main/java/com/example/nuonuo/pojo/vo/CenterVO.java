@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,5 +25,7 @@ public class CenterVO {
     private String need;
 
     private String address;
+
+
 
 }

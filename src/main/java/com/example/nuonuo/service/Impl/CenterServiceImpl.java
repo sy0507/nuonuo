@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +42,27 @@ public class CenterServiceImpl implements CenterService {
         BeanUtils.copyProperties(centerdto,center);
         center.setNeed("0");
         centerMapper.insertSelective(center);
+        int id=center.getCenterId();
+//        Optional<List<Integer>> carIds=Optional.ofNullable(centerdto.getCarId());
+        Optional<List<Integer>> nums=Optional.ofNullable(centerdto.getNum());
+        Optional<List<Double>> weights=Optional.ofNullable(centerdto.getWeight());
+//        Optional<List<Car>> cars=Optional.ofNullable(centerdto.getClass(Car));
+            nums.ifPresent(num->{
+                weights.ifPresent(weight->{
+                    for (int i=num.size()-1;i>=0;i--)
+                    {
+                        Integer nu=num.get(i);
+                        Double we=weight.get(i);
+                        CenterCar centerCar=new CenterCar();
+                        centerCar.setCenterId(id);
+                        centerCar.setNum(nu);
+                        centerCar.setWeight(we);
+                        centerCarMapper.insertSelective(centerCar);
+
+                    }
+                });
+
+            });
 
 
     }

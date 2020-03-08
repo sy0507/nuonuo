@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,5 +22,14 @@ public class CenterDTO {
 
 
     private String address;
+
+//    @Column(name = "car_id")
+//    private List<Integer> carId;
+
+    private List<Integer> num;
+
+    private List<Double> weight;
+
+
 
 }

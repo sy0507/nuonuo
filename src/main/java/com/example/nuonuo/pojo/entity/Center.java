@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Getter
@@ -14,6 +16,7 @@ import javax.persistence.Id;
 public class Center {
     @Id
     @Column(name = "center_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer centerId;
 
     private String sname;
