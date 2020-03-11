@@ -23,6 +23,12 @@ public class CenterDTO {
 
     private String address;
 
+    private Integer lenth;
+
+    private Double speed;
+
+    private Integer time;
+
 //    @Column(name = "car_id")
 //    private List<Integer> carId;
 

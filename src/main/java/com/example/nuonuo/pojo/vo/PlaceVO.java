@@ -1,12 +1,16 @@
 package com.example.nuonuo.pojo.vo;
 
 
+import com.example.nuonuo.pojo.entity.Car;
+import com.example.nuonuo.pojo.entity.Center;
+import com.example.nuonuo.pojo.entity.CenterCar;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,4 +31,8 @@ public class PlaceVO {
 
     @Column(name = "center_id")
     private Integer centerId;
+
+    private Center center;
+
+    private List<CenterCar> carList;
 }

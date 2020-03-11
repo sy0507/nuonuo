@@ -25,7 +25,7 @@ public interface CenterService {
     void distance(Integer centerId);
 
 
-    Object execute(Integer centerId,Integer lenth, Integer speed, Integer time) throws IOException, InterruptedException;
+    Object execute(Integer centerId) throws IOException, InterruptedException;
 
 
     Object modify(Integer id, CenterDTO centerDTO);

@@ -13,6 +13,8 @@ public class Car {
     @Column(name = "car_id")
     private Integer carId;
 
+    private Integer num;
+
     private Double weight;
 
 }

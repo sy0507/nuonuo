@@ -1,6 +1,8 @@
 package com.example.nuonuo.pojo.vo;
 
 import com.example.nuonuo.pojo.entity.Car;
+import com.example.nuonuo.pojo.entity.CenterCar;
+import com.example.nuonuo.pojo.entity.Place;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,6 +29,14 @@ public class CenterVO {
 
     private String address;
 
-    private List<Car> listCar;
+    private List<CenterCar> listCar;
+
+    private List<Place> placeList;
+
+    private Integer lenth;
+
+    private Double speed;
+
+    private Integer time;
 
 }

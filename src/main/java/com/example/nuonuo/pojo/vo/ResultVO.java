@@ -1,24 +1,23 @@
 package com.example.nuonuo.pojo.vo;
 
+import com.example.nuonuo.pojo.entity.Center;
+import com.example.nuonuo.pojo.entity.Place;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
 public class ResultVO {
-    private Integer id;
-    @Column(name = "car_id")
-    private  Integer carId;
 
-    @Column(name = "full_load_rate")
-    private Double fullLoadRate;
+    private Center center;
 
-    private Double mileage;
+    private Place place;
 
+    private String discharges;
 
-    private String route;
 }

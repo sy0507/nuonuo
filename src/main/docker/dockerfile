@@ -1,6 +1,6 @@
 FROM openjdk:11-slim
 ADD webapp.jar webapp.jar
-copy ant.out /
-run chmod 777 /ant.out
+copy ant2.out /
+run chmod 777 /ant2.out
 EXPOSE 80
 ENTRYPOINT ["java","-jar","webapp.jar"]

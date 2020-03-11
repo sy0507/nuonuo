@@ -90,7 +90,7 @@ public class CenterController {
         });
     }
     @GetMapping("/execute/{centerId}")
-    public WebAsyncTask<Object> execute(@PathVariable Integer centerId, Integer lenth,Integer speed,Integer time){
-        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.execute(centerId,lenth,speed,time)));
+    public WebAsyncTask<Object> execute(@PathVariable Integer centerId){
+        return new WebAsyncTask<>(() -> JsonResult.ok(centerService.execute(centerId)));
     }
 }

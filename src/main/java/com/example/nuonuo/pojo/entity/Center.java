@@ -29,4 +29,10 @@ public class Center {
     private String need;
 
     private String address;
+
+    private Integer lenth;
+
+    private Double speed;
+
+    private Integer time;
 }

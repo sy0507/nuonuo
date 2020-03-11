@@ -76,8 +76,8 @@ public class CenterServiceImpl implements CenterService {
         for (int i=0;i<centerList.size();i++){
             CenterVO centerVO=new CenterVO();
             BeanUtils.copyProperties(centerList.get(i),centerVO);
-            List<Car> listCar = carMapper.selectByCenterId(centerVO.getCenterId());
-            centerVO.setListCar(listCar);
+            List<CenterCar> centerCarList=centerCarMapper.getById(centerVO.getCenterId());
+            centerVO.setListCar(centerCarList);
             centerVOList.add(centerVO);
         }
 
@@ -163,21 +163,11 @@ public class CenterServiceImpl implements CenterService {
     }
 
     @Override
-    public Object execute(Integer centerId,Integer lenth,Integer speed,Integer time) throws IOException, InterruptedException {
-        outfile(centerId,lenth,speed,time);
-//        String fileName = this.getClass().getClassLoader().getResource("A12.exe").getPath();
-//        ClassPathResource resource = new ClassPathResource("A12.exe");
-//        File sourceFile = resource.getFile();
-//        InputStream fis = resource.getInputStream();
-//        InputStream is = this.getClass().getResourceAsStream("/dict/fileName.txt");
-//        InputStreamReader isr = new InputStreamReader(is);
-//        BufferedReader br = new BufferedReader(isr);
-//        String filePath  = createFile("A12.exe");
-        String fileName = "A12.exe";
-//        String filepath = getUploadResource(fileName);
-//        System.out.println(filepath);
-//        final Process proc = Runtime.getRuntime().exec("A12.exe");
-        final Process proc = Runtime.getRuntime().exec("/ant.out");
+    public Object execute(Integer centerId) throws IOException, InterruptedException {
+        Center center=centerMapper.selectByPrimaryKey(centerId);
+        outfile(centerId,center.getLenth(),center.getSpeed(),center.getTime());
+        final Process proc = Runtime.getRuntime().exec("A12.exe");
+//        final Process proc = Runtime.getRuntime().exec("/ant2.out");
         Thread.currentThread().sleep(1000);
          Pattern compile = Pattern.compile("\\d+");
          Pattern compile2 = Pattern.compile("\\d+.\\d+");
@@ -188,54 +178,70 @@ public class CenterServiceImpl implements CenterService {
             FileReader fr = new FileReader("out.txt");
             BufferedReader bf = new BufferedReader(fr);
             String str;
-            while ((str = bf.readLine()) != null && nowLine <= skipLine){
-                nowLine++;
-            }
+
+            str=bf.readLine();
+            String totalMileage=matchDouble(str);
+            str = bf.readLine();
+            String totalTime=matchDouble(str);
+            str = bf.readLine();
+            String totalOrder=matchDouble(str);
             carNum =matchNumberToInt(str);
-            System.out.println("匹配到车辆数：" + carNum);
-            int carType;
-            double fullLoadRate;
-            double mileage;
-            String route;
-            int count=0;
+            str = bf.readLine();
+            int totalCarNumber=matchNumberToInt(str);
+            List<ResultVO> resultVOList=new ArrayList<>();
             while ((str = bf.readLine()) != null) {
                 try{
-                    String[] split = str.split(",");
-                    carType = matchNumberToInt(split[0]);
-                    fullLoadRate = matchNumberToDouble(split[1]);
-                    mileage = matchNumberToDouble(split[2]);
-                    route = split[3].split(":")[1].trim();
-                    System.out.println("----------------------------");
-                    System.out.println(str);
-                    System.out.println("解析：类型：" + carType);
-                    System.out.println("解析：满载率：" + fullLoadRate);
-                    System.out.println("解析：里程数：" + mileage);
-                    System.out.println("解析：行驶的路线：" + route);
-                    Result result=new Result();
-                    result.setCarId(carType);
-                    result.setFullLoadRate(fullLoadRate);
-                    result.setMileage(mileage);
-                    result.setRoute(route);
-                    resultMapper.insertSelective(result);
+                    String[] split = str.split(", ");
+                    int type=matchNumberToInt(split[0]);
+                    String deadWeight=matchDouble(split[1]);
+                    String totalDischarge=matchDouble(split[2]);
+                    String fullLoadRate=matchDouble(split[3]);
+                    String mileage=matchDouble(split[4]);
+                    String needTime=matchDouble(split[5]);
+                    str = bf.readLine();
+                    String[] split2 = str.split("，");
+                    int passCount=matchNumberToInt(split2[0]);
+//                    int dischargeTime=matchNumberToInt(split2[1]);
+                    List<String> routes = new ArrayList<>();
+                    List<String> discharges = new ArrayList<>();
+                    for (int i=0;i<passCount;i++){
+
+                        str=bf.readLine();
+                        String[] split3 = str.split(" ");
+                        routes.add(split3[0]);
+                        discharges.add(split3[1]);
+//                        System.out.println(routes);
+                    }
+                    System.out.println(routes);
+
+                    ResultVO resultVO=new ResultVO();
+                    Center center1=centerMapper.selectByPrimaryKey(centerId);
+                    resultVO.setCenter(center1);
+                    for (int i=1;i<routes.size();i++)
+                    {
+                        System.out.println(routes.get(i));
+                        Place place=placeMapper.selectByPrimaryKey(routes.get(i));
+                        resultVO.setPlace(place);
+                        resultVO.setDischarges(discharges.get(i));
+                        resultVOList.add(resultVO);
+                    }
+
+
+
+
                 }catch (Exception e){
                     e.printStackTrace();
                     System.out.println("解析出错");
                 }
+
             }
             bf.close();
             fr.close();
-            List<ResultVO> resultVOList=new ArrayList<>();
-            List<Result> resultList=resultMapper.selectAll();
-            for (int i=resultList.size()-1;i>=resultList.size()-carNum;i--)
-            {
-                ResultVO resultVO=new ResultVO();
-                BeanUtils.copyProperties(resultList.get(i),resultVO);
-                resultVOList.add(resultVO);
-            }
             return resultVOList;
         }catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
 
 
@@ -255,6 +261,11 @@ public class CenterServiceImpl implements CenterService {
         CenterVO centerVO=new CenterVO();
         Center center=centerMapper.selectByPrimaryKey(id);
         BeanUtils.copyProperties(center,centerVO);
+        List<CenterCar> centerCarList=centerCarMapper.getById(centerVO.getCenterId());
+        centerVO.setListCar(centerCarList);
+        List<Place> placeList=placeMapper.selectByCenterId(id);
+        centerVO.setPlaceList(placeList);
+
         return centerVO;
     }
 
@@ -304,7 +315,7 @@ public class CenterServiceImpl implements CenterService {
         return result;
     }
 
-    public void outfile(Integer centerId,Integer lenth,Integer speed,Integer time) throws IOException {
+    public void outfile(Integer centerId,Integer lenth,Double speed,Integer time) throws IOException {
 //        File file=null;
 //        FileWriter fw=null;
 //        file=new File("in.txt");
@@ -341,10 +352,14 @@ public class CenterServiceImpl implements CenterService {
         write.append(time);
         write.append("\r\n");
         write.append(0);
+        write.append(" ");
+        write.append(0);
         write.append("\r\n");
         Buff.write(write.toString().getBytes("UTF-8"));
         for (int i=0;i<list.size();i++){
             write1=new StringBuffer();
+            write1.append(list.get(i).getPlaceId());
+            write1.append(" ");
             write1.append(list.get(i).getNeed());
             write1.append("\r\n");
             Buff.write(write1.toString().getBytes("UTF-8"));
@@ -431,6 +446,13 @@ public class CenterServiceImpl implements CenterService {
             e.printStackTrace();
         }
     }
+    static String matchDouble(String str){
+        Pattern compile2 = Pattern.compile("\\d+.\\d+");
+        Matcher matcher = compile2.matcher(str);
+        if (matcher.find()){
+            return matcher.group();
 
-
+        }
+        return "";
+    }
 }

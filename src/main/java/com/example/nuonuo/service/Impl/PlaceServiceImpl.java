@@ -1,10 +1,11 @@
 package com.example.nuonuo.service.Impl;
 
+import com.example.nuonuo.mapper.CenterMapper;
 import com.example.nuonuo.mapper.PlaceMapper;
 import com.example.nuonuo.pojo.dto.PlaceDTO;
 import com.example.nuonuo.pojo.entity.Center;
+import com.example.nuonuo.pojo.entity.CenterCar;
 import com.example.nuonuo.pojo.entity.Place;
-import com.example.nuonuo.pojo.vo.CenterVO;
 import com.example.nuonuo.pojo.vo.PlaceVO;
 import com.example.nuonuo.service.PlaceService;
 import org.springframework.beans.BeanUtils;
@@ -16,9 +17,11 @@ import java.util.List;
 @Service
 public class PlaceServiceImpl implements PlaceService {
     private final PlaceMapper placeMapper;
+    private final CenterMapper centerMapper;
 
-    public PlaceServiceImpl(PlaceMapper placeMapper) {
+    public PlaceServiceImpl(PlaceMapper placeMapper, CenterMapper centerMapper) {
         this.placeMapper = placeMapper;
+        this.centerMapper = centerMapper;
     }
 
     @Override
