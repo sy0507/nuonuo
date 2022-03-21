@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -15,14 +16,19 @@ import javax.validation.constraints.Size;
 public class PutUserProfileDTO {
   @Positive(message = "{user.profile.positive.head-pic-id}")
   private Integer headPicId;
-  @Pattern(regexp = "(保密|男|女)", message = "{user.profile.pattern.gender}")
-  @JsonProperty("gender")
-  private String sexual;
-  @Size(max = 15, message = "{user.profile.size.qq}")
-  private String qq;
+
+  private String introduction;
 
   private String name;
 
-  private String weixin;
+  private String phone;
+
+  private String mail;
+
+  @Column(name = "second_avatar_id")
+  private Integer secondAvatarId;
+
+  @Column(name = "personal_avatar_id")
+  private Integer personalAvatarId;
 
 }

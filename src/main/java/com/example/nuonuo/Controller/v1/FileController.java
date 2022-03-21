@@ -26,7 +26,7 @@ public class FileController {
 
   @PostMapping("/files")
   public WebAsyncTask<Object> uploadFile(@RequestParam("file") MultipartFile multipartFile,
-                                         @Token Integer userId) {
+                                         @RequestParam(value = "uid")  Integer userId) {
     if (multipartFile.isEmpty()) {
       throw new FileEmptyException("上传的文件必须非空");
     }

@@ -15,10 +15,7 @@ import static com.example.nuonuo.constant.Constants.REGEX_PHONE_NUMBER;
 @Setter
 @ToString
   public class UserLoginDTO {
-  @NotBlank(message = "{user.login.not-blank.phone}")
-  @Pattern(regexp = REGEX_PHONE_NUMBER, message = "{user.login.pattern.phone}")
-  @JsonProperty("account")
-  private String phone;
+  private String uname;
   @NotBlank(message = "{user.login.not-blank.password}")
   @Size(min = 6, max = 20, message = "{user.login.size.password}")
   private String password;

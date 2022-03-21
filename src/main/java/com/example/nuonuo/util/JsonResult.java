@@ -83,7 +83,7 @@ public class JsonResult {
   }
 
   private JsonResult(Object data) {
-    this.status = 0;
+    this.status = 2000;
     this.message = "成功";
     this.data = data;
   }

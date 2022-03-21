@@ -14,4 +14,13 @@ public interface UserMapper extends BaseMapper<User> {
 
   @Select("SELECT * FROM user where email = #{email}")
   List<User> findUserByEmail(String email);
+
+  @Select("select * from user where name like '%' #{condition} '%' ")
+  List<User> getAuthor(String condition);
+
+  @Select("select * from user where uname =#{uname}")
+  User selectByUname(String uname);
+
+
+
 }

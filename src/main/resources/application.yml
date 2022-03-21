@@ -3,15 +3,15 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://116.62.42.66:3306/A12?useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/audio?useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   devtools:
     restart:
       enabled: false
   servlet:
     multipart:
-      max-file-size: 1MB
-      max-request-size: 1MB
+      max-file-size: 2GB
+      max-request-size: 2GB
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -32,6 +32,13 @@ spring:
       required: true
     default-encoding: UTF-8
 
+pagehelper:
+  helper-dialect: mysql
+  support-methods-arguments: true
+  params: count=countSql
+  default-page-size: 10
+  default-order: DESC
+
 
 mybatis:
   configuration:
@@ -44,11 +51,11 @@ mybatis:
 
 web:
   url:
-      root: http://47.101.140.66
+      root: http://127.0.0.1
       file: ${web.url.root}/files
 store:
   file:
-    path: /data/files
+    path: \data\files
     max-path-length: 200
 server:
   port: 90

@@ -1,12 +1,8 @@
 package com.example.nuonuo.service;
 
-import com.example.nuonuo.pojo.dto.PutUserProfileDTO;
-import com.example.nuonuo.pojo.dto.UserLoginDTO;
-import com.example.nuonuo.pojo.dto.UserRegisterDTO;
-import com.example.nuonuo.pojo.dto.UserResetPasswordDTO;
+import com.example.nuonuo.pojo.dto.*;
 import com.example.nuonuo.pojo.entity.User;
-import com.example.nuonuo.pojo.vo.ActivityVO;
-import com.example.nuonuo.pojo.vo.UserInfoVO;
+import com.example.nuonuo.pojo.vo.*;
 
 import java.util.List;
 
@@ -26,12 +22,29 @@ public interface UserService {
 
   Object updateProfile(Integer uid, PutUserProfileDTO userProfileDTO);
 
-  UserInfoVO getUserInfoVO(User user);
-
-  void collectActivity(Integer activityId, User user);
-
-  List<ActivityVO> acGetList(User user);
+  UserInfoVO getUserInfoVO(Integer id);
 
   User queryUserByToken(String token);
 
+    void collectAudio(Integer audioId, Integer uid);
+
+  void goodAudio(Integer audioId, Integer uid);
+
+  void watchAudio(Integer audioId);
+
+  void follow(Integer id, Integer uid);
+
+  List<CardVO> getCollectList(Integer id);
+
+  List<FUserVO> getFollowList(Integer id);
+
+  List<FUserVO> getFanList(Integer id);
+
+  List<UAudioVO> getUploadList(Integer id);
+
+  AudioAdminVO getUpload(Integer audioId);
+
+  Object updateAudio(Integer audioId, AudioDTO audioDTO);
+
+  Integer getLoginNumber();
 }

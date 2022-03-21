@@ -36,7 +36,7 @@ public class FileServiceImpl implements FileService {
                          FileStoreMapper fileStoreMapper) {
     this.fileStoreMapper = fileStoreMapper;
     this.maxOriginalFilenameLength = maxOriginalFilenameLength;
-    this.storeRootPath = storeRootPath + "/";
+    this.storeRootPath = storeRootPath ;
     this.maxDiskNameLength = maxDiskNameLength;
     this.webRootUrl = webRootUrl;
   }
@@ -44,7 +44,8 @@ public class FileServiceImpl implements FileService {
   @Override
   public String getWebUrl(String path) {
     if (hasText(path)) {
-      return webRootUrl + "/" + path;
+      return "C:\\data\\files" + "/" + path;
+//      return webRootUrl+"/"+path;
     }
     return "";
   }
@@ -52,8 +53,10 @@ public class FileServiceImpl implements FileService {
   @Override
   public Object saveFile(MultipartFile multipartFile, Integer userId) {
     String contentType = multipartFile.getContentType();
-    if (contentType == null || !contentType.startsWith("image")) {
-      throw new CommonException("上传的文件不是图片");
+    System.out.println(contentType);
+    System.out.println(contentType.startsWith("audio"));
+    if (contentType == null || !(contentType.startsWith("image") || contentType.startsWith("audio"))) {
+      throw new CommonException("上传的文件不是图片或者音频");
     }
     String originalFilename = multipartFile.getOriginalFilename();
     if (originalFilename == null) {
@@ -63,12 +66,13 @@ public class FileServiceImpl implements FileService {
     if (maxOriginalFilenameLength - originalFilename.length() < 0) {
       throw new FileNameIllegalException("文件名长度不能超过" + maxOriginalFilenameLength + "个字");
     }
-    File saveFile = new File(storeRootPath + originalFilename);
+    File saveFile = new File(storeRootPath +"/"+ originalFilename);
     String diskName = originalFilename;
     while (saveFile.exists()) {
       diskName = generateRandomFilename(originalFilename);
-      saveFile = new File(storeRootPath + diskName);
+      saveFile = new File(new File(storeRootPath).getAbsolutePath()+"/" + diskName);
     }
+    /*System.out.println(new File(storeRootPath).getAbsolutePath());*/
 
     FileStore file = new FileStore();
     file.setDiskName(diskName);
@@ -82,12 +86,14 @@ public class FileServiceImpl implements FileService {
     resultVO.setSize(multipartFile.getSize());
 
     File parentFile = saveFile.getParentFile();
+      System.out.println(parentFile);
     if (!parentFile.exists() && !parentFile.mkdir()) {
+      System.out.println("okkk");
       log.error("创建文件目录失败，目录路径: {}", parentFile.getAbsolutePath());
     }
     try {
       multipartFile.transferTo(saveFile);
-      setReadable(saveFile);
+//      setReadable(saveFile);
     } catch (IOException e) {
       throw new FileStoreFailedException("文件保存失败", e);
     }
@@ -98,6 +104,7 @@ public class FileServiceImpl implements FileService {
   @Override
   public String getUrlById(Integer fileId) {
     FileStore file = fileStoreMapper.selectByPrimaryKey(fileId);
+    System.out.println(fileId);
     if (file == null) {
       return "";
     }
