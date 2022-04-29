@@ -3,7 +3,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/audio?useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/tencent?useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
   devtools:
     restart:
@@ -35,6 +35,7 @@ spring:
 pagehelper:
   helper-dialect: mysql
   support-methods-arguments: true
+  reasonable: false
   params: count=countSql
   default-page-size: 10
   default-order: DESC

@@ -23,19 +23,19 @@ public class SearchController {
     }
 
     @GetMapping("/getAuthor/{condition}")
-    public WebAsyncTask<Object> listAuthor(@PathVariable("condition") String condition, PageDTO pageDTO, @RequestParam(required = false,value = "uid") Integer uid) {
+    public WebAsyncTask<Object> listAuthor(@PathVariable("condition") String condition,@RequestBody @Validated PageDTO pageDTO, @RequestParam(required = false,value = "uid") Integer uid) {
         return new WebAsyncTask<>(() -> JsonResult.ok(searchService.list(condition, pageDTO,uid)));
     }
 
 
     @GetMapping("/getAudio/{condition}")
-    public WebAsyncTask<Object> listAudio(@PathVariable("condition") String condition, PageDTO pageDTO) {
+    public WebAsyncTask<Object> listAudio(@PathVariable("condition") String condition,@RequestBody @Validated PageDTO pageDTO) {
         return new WebAsyncTask<>(() -> JsonResult.ok(searchService.listAudio(condition, pageDTO)));
     }
 
     @GetMapping("/adminAudio")
     public WebAsyncTask<Object> listAdminAudio(@RequestParam(required = false ,value = "audio_id") Integer audioId, @RequestParam(required = false,value = "audio_name") String audioName,
-                                               @RequestParam(required = false,value = "uid") Integer uid,@RequestParam(required = false,value = "audio_type_id") Integer audioTypeId,PageDTO pageDTO) {
+                                               @RequestParam(required = false,value = "uid") Integer uid,@RequestParam(required = false,value = "audio_type_id") Integer audioTypeId,@RequestBody @Validated PageDTO pageDTO) {
         return new WebAsyncTask<>(() -> JsonResult.ok(searchService.listAdminAudio(audioId,audioName,uid,audioTypeId, pageDTO)));
     }
 }

@@ -23,4 +23,10 @@ public class FUserVO {
      * 头像地址
      */
     private String headPicUrl;
+
+    private Integer fans;
+    private String introduction;
+
+    @Column(name = "audio_num")
+    private Integer audioNum;
 }

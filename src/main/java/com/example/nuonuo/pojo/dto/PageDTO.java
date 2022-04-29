@@ -8,8 +8,12 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PageDTO {
-    private Integer page = 1;
-    private Integer pageSize = 9;
+
+    private Integer page;
+
+    private Integer pageSize;
+
     private String order;
+
     private String sortBy;
 }

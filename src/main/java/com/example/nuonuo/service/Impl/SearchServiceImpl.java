@@ -44,7 +44,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<AuthorVO> list(String condition, PageDTO pageDTO,Integer uid) {
-        pageDTO.setSortBy("fans");
+        pageDTO.setSortBy(pageDTO.getSortBy());
         pageHelper.startPage(pageDTO,true);
         List<AuthorVO> authorVOList=new ArrayList<>();
         List<User> userList=userMapper.getAuthor(condition);
@@ -72,10 +72,11 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<LAudioVO> listAudio(String condition, PageDTO pageDTO) {
-        pageDTO.setSortBy("good_number");
+        pageDTO.setSortBy(pageDTO.getSortBy());
         pageHelper.startPage(pageDTO,true);
-        List<LAudioVO> lAudioVOList=new ArrayList<>();
         List<Audio> audioList=audioMapper.getLAudio(condition);
+        List<LAudioVO> lAudioVOList=new ArrayList<>();
+
 
         for (int i=0;i<audioList.size();i++){
             LAudioVO lAudioVO=new LAudioVO();
